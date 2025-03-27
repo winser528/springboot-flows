@@ -1,0 +1,88 @@
+server:
+  port: 80
+  servlet:
+    context-path: /
+    encoding:
+      charset: utf-8
+      enabled: true
+      force: true
+  tomcat:
+    uri-encoding: UTF-8
+    threads:
+      max: 200
+      min-spare: 20
+# Spring配置
+spring:
+  # Ehcache配置
+  cache:
+    type: ehcache
+    ehcache:
+      config: classpath:/ehcache.xml
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/zjzcn
+    username: root
+    password: root
+    hikari:
+      # 连接池中允许的最小连接数。缺省值：10
+      minimum-idle: 10
+      # 连接池中允许的最大连接数。缺省值：10
+      maximum-pool-size: 20
+      # 自动提交 默认值为 true
+      auto-commit: true
+      # 连接允许在池中闲置的最长时间，一个连接idle状态的最大时长（毫秒），超时则被释放（retired），缺省:10分钟
+      idle-timeout: 600000
+      # 连接池名字，用于日志和监控
+      pool-name: mysql-pool
+      # 一 个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟，建议设置比数据库超时时长少30秒
+      max-lifetime: 600000
+      # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒
+      connection-timeout: 30000
+      #连接测试查询语句，用于验证连接是否有效
+      connection-test-query: select 1
+      #验证连接有效性的超时时间，单位为毫秒,默认值 5000 毫秒（5 秒）
+      validation-timeout: 30000
+      #设置事务隔离级别,不配置此项默认遵从数据库的配置，读已提交TRANSACTION_READ_COMMITTED，此外还有读未提交TRANSACTION_READ_UNCOMMITTED，可重复度TRANSACTION_REPEATABLE_READ，串行化TRANSACTION_SERIALIZABLE
+      transaction-isolation: TRANSACTION_READ_COMMITTED
+      #是否将连接设置为只读模式，默认false
+      readOnly: false
+  # 资源信息
+  messages:
+    encoding: UTF-8
+    # 国际化资源文件路径
+    basename: i18n/messages
+  mvc:
+    converters:
+      preferred-json-mapper: fastjson
+    format:
+      date: yyyy-MM-dd
+      time: HH:mm:ss
+      date-time: yyyy-MM-dd HH:mm:ss
+    pathmatch:
+      matching-strategy: ant_path_matcher
+    static-path-pattern: /**
+  session:
+    store-type: jdbc
+  # 文件上传
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+  web:
+    resources:
+      static-locations: classpath:/assets/,classpath:/static/,classpath:/html/
+  # 服务模块
+  devtools:
+    restart:
+      # 热部署开关
+      enabled: true
+      additional-paths: src/main/java
+      exclude: html/**,static/**,templates/**,mapper/**,mybatis/**,config/**
+
+# 日志配置
+logging:
+  config: classpath:logback-spring.xml
+
+#配置监控统计拦截的filters，去掉后监控界面sql将无法统计,'wall'用于防火墙
+filters: stat, wall, log4j
